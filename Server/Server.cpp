@@ -2,12 +2,15 @@
 #include <string>
 #include <WinSock2.h>
 #include <chrono>
+#include <mutex>
+
 #pragma comment(lib, "ws2_32.lib")
 #pragma warning(disable:4996) 
 
 
 SOCKET connections[100]; // defining socket that allows 100 connections
 int connIndex = 0; // counter for the client connections
+std::mutex mtx;
 
 std::string getCurrentTime() {
     auto rTime = std::chrono::system_clock::now();
@@ -24,14 +27,16 @@ void ClientHandler(int k) {
         recv(connections[k], msg_from_c, sizeof(msg_from_c), NULL); // receive a message from client with index k
         std::cout << "Message from client " << k << " received on " << getCurrentTime().c_str() << std::endl;
         std::string msg = "From client " + std::to_string(k) + ": " + msg_from_c;
+        mtx.lock();
         // send this message to all clients except the sender client
         for (int i = 0; i < connIndex; i++) {
-            if (i == k) {
+            if (i == k || i == 2) {
                 continue;
             };
             send(connections[i], msg.c_str(), sizeof(msg), NULL);
             std::cout << "Message to client " << i << " received on " << getCurrentTime().c_str() << std::endl;
         }
+        mtx.unlock();
     }
 }
 
