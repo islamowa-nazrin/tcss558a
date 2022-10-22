@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    //if the library is loaded, we can add info for scoket address
+    //if the library is loaded, we can add info for scoket addres
     SOCKADDR_IN address;
     int addrSize = sizeof(address);
     address.sin_addr.s_addr = inet_addr(ip); //specifying IP
