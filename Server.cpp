@@ -30,7 +30,7 @@ void ClientHandler(int k) {
         mtx.lock();
         // send this message to all clients except the sender client
         for (int i = 0; i < connIndex; i++) {
-            if (i == k || i == 2) {
+            if (i == k) {
                 continue;
             };
             send(connections[i], msg.c_str(), sizeof(msg), NULL);
